@@ -1,6 +1,4 @@
 from number import Numbers
-import time
-
 
 def main():
     while True:
@@ -18,6 +16,8 @@ def float_number(first_number_input, second_number_input):
 
 
 def int_number(first_number_input, second_number_input):
+    temp = Numbers(str(first_number_input), str(second_number_input))
+    print(temp.numbers)
     operation = input('Операции(+, -, *, /): ')
     if operation == '+':
         print(f'''({first_number_input}) + ({second_number_input}) = {Numbers(str(first_number_input), str(second_number_input)).add_two_numbers()}''')
@@ -35,10 +35,10 @@ def int_number(first_number_input, second_number_input):
         print(f'({first_number_input}) * ({-1*second_number_input}) = {Numbers(str(first_number_input), str(-1*second_number_input)).product()}')
         print(f'({-1*first_number_input}) * ({-1*second_number_input}) = {Numbers(str(-1*first_number_input), str(-1*second_number_input)).product()}')
     elif operation == '/':
-        print(f'({first_number_input}) - ({second_number_input}) = {Numbers(str(first_number_input), str(second_number_input)).division_numbers()}')
-        print(f'({-1*first_number_input}) - ({second_number_input}) = {Numbers(str(-1*first_number_input), str(second_number_input)).division_numbers()}')
-        print(f'({first_number_input}) - ({-1*second_number_input}) = {Numbers(str(first_number_input), str(-1*second_number_input)).division_numbers()}')
-        print(f'({-1*first_number_input}) - ({-1*second_number_input}) = {Numbers(str(-1*first_number_input), str(-1*second_number_input)).division_numbers()}')
+        print(f'({first_number_input}) / ({second_number_input}) = {Numbers(str(first_number_input), str(second_number_input)).division_numbers()}')
+        print(f'({-1*first_number_input}) / ({second_number_input}) = {Numbers(str(-1*first_number_input), str(second_number_input)).division_numbers()}')
+        print(f'({first_number_input}) / ({-1*second_number_input}) = {Numbers(str(first_number_input), str(-1*second_number_input)).division_numbers()}')
+        print(f'({-1*first_number_input}) / ({-1*second_number_input}) = {Numbers(str(-1*first_number_input), str(-1*second_number_input)).division_numbers()}')
     else:
         print('Такой операции не существует')
 

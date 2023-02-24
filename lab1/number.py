@@ -270,7 +270,7 @@ class Numbers():
                     return number
             return [0]
         def normilaze(float_number: List[int]) -> Tuple[int,List[int]]:
-            index = 0
+            index = 127
             for i in range(0,len(float_number)):
                 if float_number[i] == 1:
                     index = i+1
@@ -307,14 +307,8 @@ class Numbers():
             first_number_exponents = self.translate_additional_code_to_number([0]*8+self.__first_number[1])-127
             second_number_exponents = self.translate_additional_code_to_number([0]*8+self.__second_number[1])-127
             exponent = max(first_number_exponents, second_number_exponents)
-            if 1 in self.__first_number[2]:
-                first_number = [1,',']+self.__first_number[2]
-            else:
-                first_number = [0,',']+self.__first_number[2]
-            if 1 in self.__second_number[2]:
-                second_number = [1,',']+self.__second_number[2]
-            else:
-                second_number = [0,',']+self.__second_number[2]
+            first_number = [1*any(self.__first_number[1]),',']+self.__first_number[2]
+            second_number = [1*any(self.__second_number[1]),',']+self.__second_number[2]
             if first_number_exponents != exponent:
                 difference = exponent-first_number_exponents
                 first_number = move(first_number,difference)
