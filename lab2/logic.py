@@ -30,7 +30,12 @@ class LogicFunction:
             self.temp_logic_formula = self.temp_logic_formula.replace('x1', str(i[0]))
             self.temp_logic_formula = self.temp_logic_formula.replace('x2', str(i[1]))
             self.temp_logic_formula = self.temp_logic_formula.replace('x3', str(i[2]))
-            self.table_object.add_row([i[0], i[1], i[2], eval(self.temp_logic_formula)])
+            self.table_object.add_row([i[0], i[1], i[2], int(eval(self.temp_logic_formula))])
         
         print(self.table_object)
-        print(self.logic_formula)
+
+    def perfect_conjunctive_normal_form(self):
+        pass
+    
+    def perfect_disjunctive_normal_form(self):
+        pass
