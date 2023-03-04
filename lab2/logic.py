@@ -6,10 +6,11 @@ class LogicFunction:
     def __init__(self) -> None:
         self.logic_formula: str = None
         self.table_object = PrettyTable()
+        self.table_instance = []
+        self.perfect_conjunctive_normal_form_formula: str = ''
+        self.perfect_disjunctive_normal_form_formula: str = ''
     
     def handler_input_formula(self, formula):
-        #!((x1+x3)*!(x2*x3))
-        #not ((x1 or x3) and not (x2 and x3))
         formula = [i for i in formula]
         
         for i in range(len(formula)):
@@ -31,11 +32,24 @@ class LogicFunction:
             self.temp_logic_formula = self.temp_logic_formula.replace('x2', str(i[1]))
             self.temp_logic_formula = self.temp_logic_formula.replace('x3', str(i[2]))
             self.table_object.add_row([i[0], i[1], i[2], int(eval(self.temp_logic_formula))])
-        
-        print(self.table_object)
+            self.table_instance.append({
+                'x1':i[0],
+                'x2':i[1],
+                'x3':i[2],
+                'f':int(eval(self.temp_logic_formula))
+            })
 
     def perfect_conjunctive_normal_form(self):
-        pass
+        for i in self.table_instance:
+            if i['f'] == 0:
+                part_of_form = '+'.join([values*'!'+keys for keys, values in i.items() if keys != 'f'])
+                self.perfect_conjunctive_normal_form_formula += f'({part_of_form})*'
+        self.perfect_conjunctive_normal_form_formula = self.perfect_conjunctive_normal_form_formula[:-1]
     
     def perfect_disjunctive_normal_form(self):
-        pass
+        for i in self.table_instance:
+            if i['f'] == 1:
+                part_of_form = '*'.join([abs(values-1)*'!'+keys for keys, values in i.items() if keys != 'f'])
+                self.perfect_disjunctive_normal_form_formula += f'({part_of_form})+'
+        self.perfect_disjunctive_normal_form_formula = self.perfect_disjunctive_normal_form_formula[:-1]
+        
