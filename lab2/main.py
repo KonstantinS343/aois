@@ -1,4 +1,4 @@
-from logic import LogicFunction
+from lab2.logic_operation import LogicFunction
 
 def main():
     logic_function = LogicFunction()
