@@ -2,7 +2,8 @@ from logic_operation import LogicFunction
 
 def main():
     logic_function = LogicFunction()
-    logic_function.handler_input_formula('!((!x1+!x3)*!(!x2*!x3))')
+    #logic_function.handler_input_formula('!((!x1+!x3)*!(!x2*!x3))')
+    logic_function.handler_input_formula(input('Input formula: '))
     logic_function.create_logic_table()
     logic_function.perfect_conjunctive_normal_form()
     logic_function.perfect_disjunctive_normal_form()
