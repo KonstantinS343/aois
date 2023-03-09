@@ -28,25 +28,61 @@ class LogicFunction:
             elif formula[i] == '*':
                 formula[i] = ' and '
             elif formula[i] == 'x':
-                self.arguments.add(formula[i]+formula[i+1])
+                self.arguments.add(formula[i] + formula[i + 1])
+            elif formula[i] == '=' and formula[i - 1] != ' =':
+                formula[i] = ' ='
+            elif formula[i] == '>':
+                formula[i] = '> '
+            elif formula[i] == '=' and formula[i - 1] == ' =':
+                formula[i] = '= '
         self.logic_formula = ''.join(formula)
+        for j in range(self.logic_formula.split().count('=>')):
+            self.replace_implication()
         self.arguments = list(self.arguments)
         self.sort_argument()
-      
+
+    def replace_implication(self):
+        formula = self.logic_formula.split()
+        data_of_open_staples, implication = [''], False
+        for i in range(len(formula) - 1, -1, -1):
+            if formula[i] == '=>' and not implication:
+                formula[i], implication = ') or', True
+                formula[i - 1] += ')'
+                if formula[i - 1][-1] != ')':
+                    formula.insert(i - 1, ' (not( ')
+                    break
+            if data_of_open_staples and formula[i][0] == '(' and implication:
+                if [x for x in formula[i]].count('(') > len(data_of_open_staples):
+                    difference_between_staples = [x for x in formula[i]].count('(') - len(data_of_open_staples)
+                    formula[i] = '(' * difference_between_staples + ' (not (' +''.join(formula[i][difference_between_staples:])
+                    break
+                data_of_open_staples[:] = [')' for j in range(0, len(data_of_open_staples) - [x for x in formula[i]].count('('))]
+            if data_of_open_staples and formula[i][-1] == ')' and implication:
+                data_of_open_staples += ')' * [j for j in formula[i]].count(')')
+                if data_of_open_staples[0] == '':
+                    data_of_open_staples.pop(0)
+                    data_of_open_staples.pop(0)
+            if implication and not data_of_open_staples:
+                formula.insert(i, ' (not( ')
+                break
+        self.logic_formula = ' '.join(formula)
+
     def sort_argument(self):
-        self.arguments.sort(key= lambda x: int(x[1]))
-        
+        self.arguments.sort(key=lambda x: int(x[1]))
+
     def replace_argument_on_number(self, set_of_values):
         counter = 0
         for i in self.arguments:
-            self.temp_logic_formula = self.temp_logic_formula.replace(i, str(set_of_values[counter]))
+            self.temp_logic_formula = self.temp_logic_formula.replace(
+                i, str(set_of_values[counter]))
             counter += 1
 
     def create_logic_table(self) -> None:
         self.table_object.field_names = [
             *self.arguments, 'f(sknf)', 'f(sdnf)', 'i']
-        values_of_arguments: List[Tuple(int)] = product(range(2), repeat=len(self.arguments))
-        begin_index: int = 2**(2**(len(self.arguments))-1)
+        values_of_arguments: List[Tuple(int)] = product(
+            range(2), repeat=len(self.arguments))
+        begin_index: int = 2**(2**(len(self.arguments)) - 1)
 
         for i in values_of_arguments:
             self.temp_logic_formula = self.logic_formula
@@ -56,11 +92,12 @@ class LogicFunction:
                                        int(eval(self.temp_logic_formula)),
                                        begin_index,
                                        ])
-            data_for_row = {self.arguments[x]: i[x] for x in range(len(self.arguments))}
-            data_for_row = { **data_for_row,
-                'f': int(eval(self.temp_logic_formula)),
-                'i': begin_index,
-            }
+            data_for_row = {self.arguments[x]: i[x]
+                            for x in range(len(self.arguments))}
+            data_for_row = {**data_for_row,
+                            'f': int(eval(self.temp_logic_formula)),
+                            'i': begin_index,
+                            }
             self.table_data.append(data_for_row)
             begin_index //= 2
 
@@ -75,7 +112,6 @@ class LogicFunction:
 
     def perfect_conjunctive_normal_form_in_number_form(self) -> None:
         temp_perfect_conjunctive_normal: List[str] = self.perfect_conjunctive_normal_form_formula.split()
-        
         for i in range(0, len(temp_perfect_conjunctive_normal)):
             if temp_perfect_conjunctive_normal[i][0] == 'x' or temp_perfect_conjunctive_normal[i][0] == 'x' \
                     or temp_perfect_conjunctive_normal[i][0] == 'x':
@@ -99,11 +135,11 @@ class LogicFunction:
             self,
             form_in_decimal: str,
             form_in_bynary: str) -> int:
-        power_for_binary_number: int = len(self.arguments)-1
+        power_for_binary_number: int = len(self.arguments) - 1
         index_of_decimal_digit: int = 0
         for i in form_in_bynary:
             if i == '*' or i == '+':
-                power_for_binary_number = len(self.arguments)-1
+                power_for_binary_number = len(self.arguments) - 1
                 form_in_decimal.append(0)
                 index_of_decimal_digit += 1
                 continue
@@ -122,7 +158,6 @@ class LogicFunction:
 
     def perfect_disjunctive_normal_form_in_number_form(self) -> None:
         temp_perfect_disjunctive_normal: List[str] = self.perfect_disjunctive_normal_form_formula.split()
-        
         for i in range(0, len(temp_perfect_disjunctive_normal)):
             if temp_perfect_disjunctive_normal[i][0] == 'x' or temp_perfect_disjunctive_normal[i][0] == 'x' \
                     or temp_perfect_disjunctive_normal[i][0] == 'x':
