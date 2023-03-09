@@ -6,6 +6,7 @@ from typing import *
 class LogicFunction:
 
     def __init__(self) -> None:
+        self.arguments = set()
         self.logic_formula: str = None
         self.table_object: object = PrettyTable()
         self.table_data: List[str] = []
@@ -19,7 +20,6 @@ class LogicFunction:
 
     def handler_input_formula(self, formula: str) -> None:
         formula: List[str] = [i for i in formula]
-
         for i in range(len(formula)):
             if formula[i] == '!':
                 formula[i] = ' not '
@@ -27,36 +27,41 @@ class LogicFunction:
                 formula[i] = ' or '
             elif formula[i] == '*':
                 formula[i] = ' and '
+            elif formula[i] == 'x':
+                self.arguments.add(formula[i]+formula[i+1])
         self.logic_formula = ''.join(formula)
+        self.arguments = list(self.arguments)
+        self.sort_argument()
+      
+    def sort_argument(self):
+        self.arguments.sort(key= lambda x: int(x[1]))
+        
+    def replace_argument_on_number(self, set_of_values):
+        counter = 0
+        for i in self.arguments:
+            self.temp_logic_formula = self.temp_logic_formula.replace(i, str(set_of_values[counter]))
+            counter += 1
 
     def create_logic_table(self) -> None:
         self.table_object.field_names = [
-            'x1', 'x2', 'x3', 'f(sknf)', 'f(sdnf)', 'i']
-        value_of_x1_x2_x3: List[Tuple(int)] = product(range(2), repeat=3)
-        begin_index: int = 128
+            *self.arguments, 'f(sknf)', 'f(sdnf)', 'i']
+        values_of_arguments: List[Tuple(int)] = product(range(2), repeat=len(self.arguments))
+        begin_index: int = 2**(2**(len(self.arguments))-1)
 
-        for i in value_of_x1_x2_x3:
+        for i in values_of_arguments:
             self.temp_logic_formula = self.logic_formula
-            self.temp_logic_formula = self.temp_logic_formula.replace(
-                'x1', str(i[0]))
-            self.temp_logic_formula = self.temp_logic_formula.replace(
-                'x2', str(i[1]))
-            self.temp_logic_formula = self.temp_logic_formula.replace(
-                'x3', str(i[2]))
-            self.table_object.add_row([i[0],
-                                       i[1],
-                                       i[2],
+            self.replace_argument_on_number(i)
+            self.table_object.add_row([*i,
                                        int(eval(self.temp_logic_formula)),
                                        int(eval(self.temp_logic_formula)),
                                        begin_index,
                                        ])
-            self.table_data.append({
-                'x1': i[0],
-                'x2': i[1],
-                'x3': i[2],
+            data_for_row = {self.arguments[x]: i[x] for x in range(len(self.arguments))}
+            data_for_row = { **data_for_row,
                 'f': int(eval(self.temp_logic_formula)),
                 'i': begin_index,
-            })
+            }
+            self.table_data.append(data_for_row)
             begin_index //= 2
 
     def perfect_conjunctive_normal_form(self) -> None:
@@ -72,11 +77,11 @@ class LogicFunction:
         temp_perfect_conjunctive_normal: List[str] = self.perfect_conjunctive_normal_form_formula.split()
         
         for i in range(0, len(temp_perfect_conjunctive_normal)):
-            if temp_perfect_conjunctive_normal[i] == 'x1' or temp_perfect_conjunctive_normal[i] == 'x2' \
-                    or temp_perfect_conjunctive_normal[i] == 'x3':
+            if temp_perfect_conjunctive_normal[i][0] == 'x' or temp_perfect_conjunctive_normal[i][0] == 'x' \
+                    or temp_perfect_conjunctive_normal[i][0] == 'x':
                 self.perfect_conjunctive_normal_form_in_bynary.append('0')
-            elif temp_perfect_conjunctive_normal[i] == '!x1' or temp_perfect_conjunctive_normal[i] == '!x2' \
-                    or temp_perfect_conjunctive_normal[i] == '!x3':
+            elif temp_perfect_conjunctive_normal[i][0] == '!' or temp_perfect_conjunctive_normal[i][0] == '!' \
+                    or temp_perfect_conjunctive_normal[i][0] == '!':
                 self.perfect_conjunctive_normal_form_in_bynary.append('1')
             elif temp_perfect_conjunctive_normal[i][0] == ')':
                 self.perfect_conjunctive_normal_form_in_bynary.append('*')
@@ -94,11 +99,11 @@ class LogicFunction:
             self,
             form_in_decimal: str,
             form_in_bynary: str) -> int:
-        power_for_binary_number: int = 2
+        power_for_binary_number: int = len(self.arguments)-1
         index_of_decimal_digit: int = 0
         for i in form_in_bynary:
             if i == '*' or i == '+':
-                power_for_binary_number = 2
+                power_for_binary_number = len(self.arguments)-1
                 form_in_decimal.append(0)
                 index_of_decimal_digit += 1
                 continue
@@ -119,11 +124,11 @@ class LogicFunction:
         temp_perfect_disjunctive_normal: List[str] = self.perfect_disjunctive_normal_form_formula.split()
         
         for i in range(0, len(temp_perfect_disjunctive_normal)):
-            if temp_perfect_disjunctive_normal[i] == 'x1' or temp_perfect_disjunctive_normal[i] == 'x2' \
-                    or temp_perfect_disjunctive_normal[i] == 'x3':
+            if temp_perfect_disjunctive_normal[i][0] == 'x' or temp_perfect_disjunctive_normal[i][0] == 'x' \
+                    or temp_perfect_disjunctive_normal[i][0] == 'x':
                 self.perfect_disjunctive_normal_form_in_bynary.append('1')
-            elif temp_perfect_disjunctive_normal[i] == '!x1' or temp_perfect_disjunctive_normal[i] == '!x2' \
-                    or temp_perfect_disjunctive_normal[i] == '!x3':
+            elif temp_perfect_disjunctive_normal[i][0] == '!' or temp_perfect_disjunctive_normal[i][0] == '!' \
+                    or temp_perfect_disjunctive_normal[i][0] == '!':
                 self.perfect_disjunctive_normal_form_in_bynary.append('0')
             elif temp_perfect_disjunctive_normal[i][0] == ')':
                 self.perfect_disjunctive_normal_form_in_bynary.append('+')
