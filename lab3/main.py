@@ -14,10 +14,10 @@ def main():
     #print(logic_function.perfect_conjunctive_normal_form_formula)
     #print(logic_function.perfect_disjunctive_normal_form_formula)
     amount_of_arguments = len(logic_function.arguments)
-    #translate_in_pdnf(glue_implicants('( !x1 * !x2 * x3 )+( !x1 * x2 * !x3 )+( !x1 * x2 * x3 )+( x1 * x2 * !x3 )'))
-    #translate_in_pcnf(glue_implicants('( x1 + x2 + x3 )*( !x1 + x2 + x3 )*( !x1 + x2 + !x3 )*( !x1 + !x2 + !x3 )'))
+    translate_in_pdnf(glue_implicants('( !x1 * !x2 * x3 )+( !x1 * x2 * !x3 )+( !x1 * x2 * x3 )+( x1 * x2 * !x3 )'))
+    translate_in_pcnf(glue_implicants('( x1 + x2 + x3 )*( !x1 + x2 + x3 )*( !x1 + x2 + !x3 )*( !x1 + !x2 + !x3 )'))
     
-    translate_in_pdnf(glue_implicants(logic_function.perfect_disjunctive_normal_form_formula))
-    translate_in_pcnf(glue_implicants(logic_function.perfect_conjunctive_normal_form_formula))
+    #translate_in_pdnf(glue_implicants(logic_function.perfect_disjunctive_normal_form_formula))
+    #translate_in_pcnf(glue_implicants(logic_function.perfect_conjunctive_normal_form_formula))
 if __name__ == '__main__':
     main()

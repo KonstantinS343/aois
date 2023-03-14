@@ -70,13 +70,13 @@ def check_on_extra_implicants(cut_back_formula):
     arguments = ['0']
     temp_cut_back_formula = deepcopy(cut_back_formula)
     for i in cut_back_formula:
-        if i not in arguments and i[0] == 'x' and ('!'+i) not in temp_cut_back_formula:
+        if i not in arguments and i[0] == 'x' and ('!'+i) not in temp_cut_back_formula and temp_cut_back_formula:
             arguments = []
             arguments.append(i)
         elif i[0] == 'x' and ('!'+i) in temp_cut_back_formula and i in temp_cut_back_formula:
             temp_cut_back_formula.remove(i)
             temp_cut_back_formula.remove('!'+i)
-        if i not in arguments and i[0] == '!' and i[1:] not in temp_cut_back_formula:
+        if i not in arguments and i[0] == '!' and i[1:] not in temp_cut_back_formula and temp_cut_back_formula:
             arguments = []
             arguments.append(i)
         elif i[0] == '!' and i[1:] in temp_cut_back_formula and i in temp_cut_back_formula:
