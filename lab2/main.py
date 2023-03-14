@@ -3,7 +3,7 @@ from logic_operation import LogicFunction
 
 def main():
     logic_function = LogicFunction()
-    # logic_function.handler_input_formula('!((!x1+x3)*!(x2*!x3))')
+    #logic_function.handler_input_formula('!((!x1+x3)*!(x2*!x3))')
     function = input('Input formula: ')
     logic_function.handler_input_formula(function)
     logic_function.create_logic_table()
