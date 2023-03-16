@@ -15,14 +15,13 @@ def implicats_table(formula_after_glue, base_formula):
     print(table)
     #print(table_data)
     index_of_delete_row = delete_row(table_data)
-    while index_of_delete_row:
+    while index_of_delete_row != None:
         del formula_after_glue[index_of_delete_row]
         del table_data[index_of_delete_row]
         index_of_delete_row = delete_row(table_data)
     return formula_after_glue
     
 def delete_row(table_data):
-    can_delete_row = []
     for i in table_data:
         table_data_after_daleted_row = deepcopy(table_data)
         table_data_after_daleted_row.remove(i)
@@ -35,10 +34,7 @@ def delete_row(table_data):
                 elif k in amount_implicats and j[k] == 'X':
                     amount_implicats[k] += 1
         if len(amount_implicats) == len(table_data[0]):
-            can_delete_row.append(i)
-    if can_delete_row:
-        return table_data.index(can_delete_row[0])
-    else:
-        return None
+            return table_data.index(i)
+    return None
             
     
