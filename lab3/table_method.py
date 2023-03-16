@@ -1,5 +1,4 @@
 from prettytable import PrettyTable
-import random
 
 def table_method(formula, base_formula,form_of_formula, amout_values, table_data):
     create_table(amout_values, formula, table_data)
