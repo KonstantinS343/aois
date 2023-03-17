@@ -6,7 +6,7 @@ from logic_operation import LogicFunction
 from calculation_method import *
 from tabular_calculation_method import *
 from table_method import *
-#(!x1*!x2*x3*x4)+(!x1*x2*x3*x4)+(x1*x2*x3*x4)+(x1*!x2*x3*x4)+(x1*x2*!x3*!x4)+(x1*x2*!x3*x4)+(x1*x2*x3*!x4)
+
 #(!x1+x2)
 def main():
     logic_function = LogicFunction()
@@ -30,7 +30,7 @@ def main():
     #translate_in_pdnf(calaculation_method(logic_function.perfect_disjunctive_normal_form_formula))
     #translate_in_pcnf(calaculation_method(logic_function.perfect_conjunctive_normal_form_formula))
     
-    #table_method(*glue_implicants(logic_function.perfect_disjunctive_normal_form_formula), amount_values, logic_function.table_data)
+    table_method(*glue_implicants(logic_function.perfect_disjunctive_normal_form_formula), amount_values, logic_function.table_data)
     
 if __name__ == '__main__':
     main()
