@@ -1,7 +1,18 @@
 from prettytable import PrettyTable
 from copy import deepcopy
+from calculation_method import *
 
 def tabular_calculation_method(formula_after_glue, base_formula,form_of_formula):
+    while True:
+        size = len(formula_after_glue)
+        temp, temp_base_formula, form_of_formula = connect_two_implicats(formula_after_glue, form_of_formula)
+        if len(temp[0]) == 1:
+            formula_in_list = set([j for i in temp for j in i])
+            formula_in_list = delete_extra_arguments(list(formula_in_list))
+            formula_after_glue = formula_in_list 
+        if size == len(temp):
+            break         
+        
     return implicats_table(formula_after_glue, base_formula)
     
 def implicats_table(formula_after_glue, base_formula):
@@ -13,7 +24,6 @@ def implicats_table(formula_after_glue, base_formula):
         table_data.append([all([k in j for k in i])*'X' for j in base_formula])
     
     print(table)
-    #print(table_data)
     index_of_delete_row = delete_row(table_data)
     while index_of_delete_row != None:
         del formula_after_glue[index_of_delete_row]

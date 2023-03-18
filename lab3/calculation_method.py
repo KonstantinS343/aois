@@ -16,27 +16,44 @@ def glue_implicants(formula):
             index_of_space+=1
         else:
             formula_without_extra_characters[index_of_space].append(i)
-    #print(formula_without_extra_characters)
     return connect_two_implicats(formula_without_extra_characters, form_of_formula)
 
 def calaculation_method(formula):
     formula_after_glue, base_formula, form_of_formula = glue_implicants(formula)
+    while True:
+        size = len(formula_after_glue)
+        temp, base_formula, form_of_formula = connect_two_implicats(formula_after_glue, form_of_formula)
+        if len(temp[0]) == 1:
+            formula_in_list = set([j for i in temp for j in i])
+            formula_in_list = delete_extra_arguments(list(formula_in_list))
+            return formula_in_list  
+        if size == len(temp):
+            break         
     return remove_extra_implications(formula_after_glue, form_of_formula)
     
+def delete_extra_arguments(formula):
+    temp_formula = deepcopy(formula)
+    for i in formula:
+        if i in temp_formula and '!'+i in temp_formula:
+            temp_formula.remove(i)
+            temp_formula.remove('!'+i)
+    return [[i] for i in temp_formula]
 
 def connect_two_implicats(formula, form_of_formula):
     formula_after_glue = []
-    amount_equels_arguments = 0
+    differense = []
+    if len(formula) == 1:
+        return (formula, formula, form_of_formula)
     for i in range(0, len(formula)-1):
         for k in range(i+1, len(formula)):
             for j in range(0, len(formula[i])):
-                if formula[i][j] == formula[k][j]:
-                    amount_equels_arguments+=1
-            if amount_equels_arguments == len(formula[0])-1:
+                if formula[i][j] != formula[k][j]:
+                    differense.append((formula[i][j], formula[k][j]))      
+            if len(differense) == 1 and differense[0][0][-1] == differense[0][1][-1]:
                 formula_after_glue.append(connect_arguments(formula[i], formula[k]))
-            amount_equels_arguments = 0
-    #print(formula_after_glue)
-    #print(remove_extra_implications(formula_after_glue))
+            differense.clear()
+    if len(formula_after_glue) == 0:
+        return (formula, formula,  form_of_formula)
     return (formula_after_glue, formula, form_of_formula)
 
 def connect_arguments(first_implicat, second_implicant):
@@ -70,6 +87,8 @@ def replace_arguments_on_0_1_pcnf(temp_formula, current_implicat, formula):
 
 def remove_extra_implications(formula, form_of_formula):
     formula_after_removed_implicats = []
+    if len(formula) == 1 or len(formula[0]) == 1:
+        return formula
     for i in range(len(formula)):
         temp_formula = deepcopy(formula)
         if form_of_formula == 'pdnf':
