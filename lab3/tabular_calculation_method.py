@@ -12,7 +12,8 @@ def tabular_calculation_method(formula_after_glue, base_formula,form_of_formula)
             formula_after_glue = formula_in_list 
         if size == len(temp):
             break         
-        
+    if len(formula_after_glue) == 0:
+        return '0'    
     return implicats_table(formula_after_glue, base_formula)
     
 def implicats_table(formula_after_glue, base_formula):

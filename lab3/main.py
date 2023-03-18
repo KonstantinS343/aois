@@ -8,9 +8,10 @@ from tabular_calculation_method import *
 from table_method import *
 #!((!x1+!x3)*(!x2*!x3))
 #(!x1+x2)
+#!(x1+x2)*!(!x2+!x3)
 def main():
     logic_function = LogicFunction()
-    logic_function.handler_input_formula('!(!x1+!x2)*!(!x2+!x3)')
+    logic_function.handler_input_formula('!(x1*x2)+!(x2*x3)')
     logic_function.create_logic_table()
     logic_function.perfect_conjunctive_normal_form()
     logic_function.perfect_disjunctive_normal_form()

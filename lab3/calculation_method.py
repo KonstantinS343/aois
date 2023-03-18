@@ -19,6 +19,8 @@ def glue_implicants(formula):
     return connect_two_implicats(formula_without_extra_characters, form_of_formula)
 
 def calaculation_method(formula):
+    if len(formula) == 0:
+        return []
     formula_after_glue, base_formula, form_of_formula = glue_implicants(formula)
     while True:
         size = len(formula_after_glue)
@@ -148,21 +150,38 @@ def cut_back_arguments(temp_formula, form_of_formula):
             return []
         else:
             return formula_after_open_staples
-    
                   
 def translate_in_pcnf(formula):
     output_fomula = []
+    if len(formula[0]) == 1:
+        output_fomula.append('(')
     for i in formula:
-        implicat = f'({" + ".join(i)})*'
+        if len(i) == 1:
+            implicat = f'{" + ".join(i)}*'
+        else:
+            implicat = f'({" + ".join(i)})*'
         output_fomula.append(implicat)
-    print(''.join(output_fomula)[:-1])
+    if len(formula[0]) == 1:
+        output_fomula[-1] = output_fomula[-1][:-1] + ')'
+        print(''.join(output_fomula))
+    else:
+        print(''.join(output_fomula)[:-1])
     
 def translate_in_pdnf(formula):
     output_fomula = []
+    if len(formula[0]) == 1:
+        output_fomula.append('(')
     for i in formula:
-        implicat = f'({" * ".join(i)})+'
+        if len(i) == 1:
+            implicat = f'{" * ".join(i)}+'
+        else:
+            implicat = f'({" * ".join(i)})+'
         output_fomula.append(implicat)
-    print(''.join(output_fomula)[:-1])
+    if len(formula[0]) == 1:
+        output_fomula[-1] = output_fomula[-1][:-1] + ')'
+        print(''.join(output_fomula))
+    else:
+        print(''.join(output_fomula)[:-1])
     
 def logic_and(first_argument, second_argument):
     if first_argument == second_argument:
