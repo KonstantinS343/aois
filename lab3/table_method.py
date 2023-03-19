@@ -2,6 +2,9 @@ from prettytable import PrettyTable
 import math
 
 def table_method(formula, base_formula,form_of_formula, amount_values, table_data):
+    if not form_of_formula:
+        print('Не существует!')
+        return
     create_table(amount_values, formula, table_data, form_of_formula)
     
 def create_table(amount_values, formula, table_data, form_of_formula):
@@ -30,9 +33,9 @@ def create_table(amount_values, formula, table_data, form_of_formula):
         table.add_row([''.join(map(str, list(i.values()))),*output])
     print(table)
     if form_of_formula == 'pdnf':
-        minimize_pdnf(temp_table)
+        minimize_function(temp_table, form_of_formula)
     else:
-        minimize_pcnf(temp_table)
+        minimize_function(temp_table, form_of_formula)
 
 def transform_dict_for_table(table_data):
     table = []
@@ -48,7 +51,6 @@ def transform_dict_in_list(table_data):
 
 def create_line(amount_arguments, values):
     columns = [{i: 0 for i in values}]
-    #columns = [[0]*amount_arguments]
     for i in range(1, 2**amount_arguments):
         for j in range(amount_arguments-1, -1,-1):
             temp = columns[i-1].copy()
@@ -61,102 +63,119 @@ def create_line(amount_arguments, values):
             if temp not in columns:
                 columns.append(temp)
                 break
-    return columns
-# 0 0 0 1 
-# 0 0 1 1
-# 0 0 1 0
-# 1 0 0 0         
-def minimize_pcnf(table_data):
-    temp = []
+    return columns       
+
+def minimize_function(table_data, form_of_formula):
+    if check_all_in_group(table_data, 1*(form_of_formula == 'pdnf')):
+        print(table_data)
+        return
+    output = [[]]
+    for i in range(0, len(table_data)):
+        for j in range(0, len(table_data[i])):
+            choose_group(check_four_group(table_data, i, j, 1*(form_of_formula == 'pdnf')), output ,table_data[i][j])
+    output.append([]) 
     for i in range(len(table_data)):
         for j in range(len(table_data[i])):
-            if table_data[i][j][1] == 0:
-                temp.append(table_data[i][j])
-                for k in range(3):
-                    a = table_data[i+1][j]
-                    while a == 0:
-                        pass
-
-def minimize_pdnf(table_data):
-    output = [[]]
-    for i in range(len(table_data)):
-            for j in range(len(table_data[i])):
-                if all(check_one_group(table_data, i, j)):
-                    output[-1].append((table_data[i][j], ))          
+            if all(check_one_group(table_data, i, j, 1*(form_of_formula == 'pdnf'))):
+                output[-1].append((table_data[i][j], ))          
     output.append([])
     for i in range(len(table_data)):
-            for j in range(len(table_data[i])):
-                result = check_two_group(table_data, i, j)
-                choose_group(result[1], output[1], table_data[i][j])         
-    output.append([])
-    for i in range(len(table_data)):
-            for j in range(len(table_data[i])):
-                if all(check_one_group(table_data, i, j)):
-                    output[-1].append(table_data[i][j])          
+        for j in range(len(table_data[i])):
+            result = check_two_group(table_data, i, j, 1*(form_of_formula == 'pdnf'))
+            choose_group(result, output, table_data[i][j])                  
     print(output)   
 
 def choose_group(result, output, current_element):
-    if current_element not in [i[1] for i in output]:
+    all_elements = [k for i in output for j in i for k in j]
+    if len(result) == 0:
+        return 
+    if current_element not in all_elements or len(result[0]) == 4:
         for i in result:
-            if (i not in [i[0] for i in output] and i not in [i[1] for i in output]) or len(result) == 1:
-                output.append((current_element, i))
-# 0 0 0 1     
-# 0 1 1 1
-def check_one_group(table_data, current_row, current_column):
+            if (i not in all_elements and i not in output[-1]) or len(result) == 1:
+                if type(result[0][0]) == tuple: 
+                    output[-1].append(i)
+                else:
+                    output[-1].append((current_element, i))
+def check_one_group(table_data, current_row, current_column, form_of_formula):
     top, bottom, left, right = False, False, False, False
-    if table_data[current_row][current_column][1] == 1:
+    if table_data[current_row][current_column][1] == form_of_formula:
         if current_column != len(table_data[current_row])-1:
-            if table_data[current_row][current_column+1][1] != 1:
+            if table_data[current_row][current_column+1][1] != form_of_formula:
                 right = True
-        elif table_data[current_row][0][1] != 1:
+        elif table_data[current_row][0][1] != form_of_formula:
             right = True
         if current_column != 0:
-            if table_data[current_row][current_column-1][1] != 1:
+            if table_data[current_row][current_column-1][1] != form_of_formula:
                 left = True
-        elif table_data[current_row][len(table_data[current_row])-1][1] != 1:
+        elif table_data[current_row][len(table_data[current_row])-1][1] != form_of_formula:
             left = True
         if current_row != 0:
-            if table_data[current_row-1][current_column][1] != 1:
+            if table_data[current_row-1][current_column][1] != form_of_formula:
                 top = True
-        elif table_data[len(table_data)-1][current_column][1] != 1:
+        else:
             top = True
         if current_row != len(table_data)-1:       
-            if table_data[current_row+1][current_column][1] != 1:
+            if table_data[current_row+1][current_column][1] != form_of_formula:
                 bottom = True
-        elif table_data[0][current_column][1] !=1:
-            bottom =True
+        else:
+            bottom = True
     return [top, bottom, left, right]
 
-def check_two_group(table_data, current_row, current_column):
-    top, bottom, left, right = False, False, False, False
+def check_two_group(table_data, current_row, current_column, form_of_formula):
     answer = []
-    if table_data[current_row][current_column][1] == 1:
+    if table_data[current_row][current_column][1] == form_of_formula:
         if current_column != len(table_data[current_row])-1:
-            if table_data[current_row][current_column+1][1] == 1 and not check_one_group(table_data, current_row, current_column+1)[2]:
-                right = True
+            if table_data[current_row][current_column+1][1] == form_of_formula:
                 answer.append(table_data[current_row][current_column+1])
-        elif table_data[current_row][0][1] == 1 and not check_one_group(table_data, current_row, 0)[2]:
-            right = True
+        elif table_data[current_row][0][1] == form_of_formula:
             answer.append(table_data[current_row][0])
         if current_column != 0:
-            if table_data[current_row][current_column-1][1] == 1 and not check_one_group(table_data, current_row, current_column-1)[3]:
-                left = True
+            if table_data[current_row][current_column-1][1] == form_of_formula:
                 answer.append(table_data[current_row][current_column-1])
-        elif table_data[current_row][len(table_data[current_row])-1][1] == 1 and not check_one_group(table_data, current_row, len(table_data[current_row])-1)[3]:
-            left = True
+        elif table_data[current_row][len(table_data[current_row])-1][1] == form_of_formula:
             answer.append(table_data[current_row][len(table_data[current_row])-1])
         if current_row != 0:
-            if table_data[current_row-1][current_column][1] == 1 and not check_one_group(table_data, current_row-1, current_column)[0]:
-                top = True
+            if table_data[current_row-1][current_column][1] == form_of_formula:
                 answer.append(table_data[current_row-1][current_column])
-        elif table_data[len(table_data)-1][current_column][1] == 1 and not check_one_group(table_data, len(table_data)-1, current_column)[0]:
-            top = True
-            answer.append(table_data[len(table_data)-1][current_column])
         if current_row != len(table_data)-1:       
-            if table_data[current_row+1][current_column][1] == 1 and not check_one_group(table_data, current_row+1, current_column)[1]:
-                bottom = True
+            if table_data[current_row+1][current_column][1] == form_of_formula:
                 answer.append(table_data[current_row+1][current_column])
-        elif table_data[0][current_column][1] ==1 and not check_one_group(table_data, 0, current_column)[1]:
-            bottom =True
-            answer.append(table_data[0][current_column])
-    return ([top, bottom, left, right], answer)
+    return answer
+
+def check_four_group(table_data, current_row, current_column, form_of_formula):
+    answer = []
+    if table_data[current_row][current_column][1] == form_of_formula:
+        if current_column == 0:
+            temp = []
+            for i in range(current_column, len(table_data[current_row])):
+                if table_data[current_row][i][1] == form_of_formula:
+                    temp.append(table_data[current_row][i])
+                else:
+                    break
+            if table_data[current_row][0][1] == form_of_formula:
+                for i in range(0, current_column):
+                    if table_data[current_row][i][1] == form_of_formula:
+                        temp.append(table_data[current_row][i])
+                    else:
+                        break
+            if len(temp) == 4:
+                answer.append(tuple(temp))
+        if current_row == 0:
+            if current_column != len(table_data[current_row])-1:
+                if table_data[current_row][current_column+1][1] == form_of_formula and table_data[current_row+1][current_column][1] == form_of_formula and \
+                    table_data[current_row+1][current_column+1][1] == form_of_formula:
+                        answer.append((table_data[current_row][current_column], table_data[current_row][current_column+1], 
+                                       table_data[current_row+1][current_column], table_data[current_row+1][current_column+1]))
+            else:
+                if table_data[current_row][0][1] == form_of_formula and table_data[current_row+1][current_column][1] == form_of_formula and \
+                    table_data[current_row+1][0][1] == form_of_formula:
+                        answer.append((table_data[current_row][current_column], table_data[current_row+1][current_column], 
+                                       table_data[current_row][0], table_data[current_row+1][0]))
+    return answer
+
+def check_all_in_group(table_data, form_of_formula):
+    for i in table_data:
+        for j in i:
+            if j[1] != form_of_formula:
+                return False
+    return True

@@ -1,10 +1,12 @@
 from copy import deepcopy
 
 def glue_implicants(formula):
-    if ')+(' in formula:
+    if ')+(' in formula or ' * ' in formula:
         form_of_formula = 'pdnf'
-    else:
+    elif ')*(' in formula or ' + ' in formula:
         form_of_formula = 'pcnf'
+    else:
+        form_of_formula = ''
     tempalte_for_delete = ['(',')','+', '*']
     formula_without_extra_characters = [[]]
     formula = [i*(not(i == ')+(' or i == ')*(')) or ' ' for i in formula.split() if i not in tempalte_for_delete]
