@@ -2,18 +2,8 @@ from prettytable import PrettyTable
 from calculation_method import *
 
 
-def table_method(
-        formula,
-        base_formula,
-        form_of_formula,
-        amount_values,
-        table_data):
-    temp_table = create_table(
-        amount_values,
-        formula,
-        table_data,
-        form_of_formula)
-
+def table_method(formula, base_formula, form_of_formula, amount_values, table_data):
+    temp_table = create_table(amount_values, formula, table_data, form_of_formula)
     if len(formula) == 1:
         return formula
     if not form_of_formula:
