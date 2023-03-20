@@ -2,12 +2,12 @@ from prettytable import PrettyTable
 from calculation_method import *
 
 def table_method(formula, base_formula,form_of_formula, amount_values, table_data):
+    temp_table = create_table(amount_values,formula, table_data, form_of_formula)
     
     if len(formula) == 1:
         return formula
     if not form_of_formula:
         return '-'
-    temp_table = create_table(amount_values,formula, table_data, form_of_formula)
     if form_of_formula == 'pdnf':
         minimized_formula =  connect_two_implicats(build_pdnf(minimize_function(temp_table, form_of_formula)), form_of_formula)[0]
     else:
@@ -148,7 +148,7 @@ def check_two_group(table_data, current_row, current_column, form_of_formula):
     return answer
 
 def check_four_group(table_data, current_row, current_column, form_of_formula):
-    answer = []
+    elements_in_group = []
     if table_data[current_row][current_column][1] == form_of_formula:
         if current_column == 0:
             group_of_elements = []
@@ -164,20 +164,34 @@ def check_four_group(table_data, current_row, current_column, form_of_formula):
                     else:
                         break
             if len(group_of_elements) == 4:
-                answer.append(tuple(group_of_elements))
+                elements_in_group.append(tuple(group_of_elements))
+        elements_in_group+= check_four_group_in_square(table_data,current_row,current_column,form_of_formula)
+    return elements_in_group
+
+def check_four_group_in_square(table_data, current_row, current_column, form_of_formula):
+    elements_in_group = []
+    if table_data[current_row][current_column][1] == form_of_formula:
         if current_row == 0:
             if current_column != len(table_data[current_row])-1:
                 if table_data[current_row][current_column+1][1] == form_of_formula and table_data[current_row+1][current_column][1] == form_of_formula and \
                     table_data[current_row+1][current_column+1][1] == form_of_formula:
-                        answer.append((table_data[current_row][current_column], table_data[current_row][current_column+1], 
+                        elements_in_group.append((table_data[current_row][current_column], table_data[current_row][current_column+1], 
                                        table_data[current_row+1][current_column], table_data[current_row+1][current_column+1]))
             else:
                 if table_data[current_row][0][1] == form_of_formula and table_data[current_row+1][current_column][1] == form_of_formula and \
                     table_data[current_row+1][0][1] == form_of_formula:
-                        answer.append((table_data[current_row][current_column], table_data[current_row+1][current_column], 
+                        elements_in_group.append((table_data[current_row][current_column], table_data[current_row+1][current_column], 
                                        table_data[current_row][0], table_data[current_row+1][0]))
-    return answer
+    return elements_in_group
 
+def build_implicants(data_about_argument, current_element):
+    for x in range(len(current_element)):
+        for k in current_element[x][0].items():
+            if x == 0:
+                data_about_argument[k[0]] = (True, k[1])
+            elif data_about_argument[k[0]][0]:
+                data_about_argument[k[0]] = (bool(True*(not data_about_argument[k[0]][1] != k[1])), k[1])
+    return data_about_argument
 def check_all_in_group(table_data, form_of_formula):
     for i in table_data:
         for j in i:
@@ -190,12 +204,7 @@ def build_pdnf(group_of_arguments):
     data_about_argument = dict()
     for i in group_of_arguments:
         for j in i:
-            for x in range(len(j)):
-                for k in j[x][0].items():
-                    if x == 0:
-                        data_about_argument[k[0]] = (True, k[1])
-                    elif data_about_argument[k[0]][0]:
-                        data_about_argument[k[0]] = (bool(True*(not data_about_argument[k[0]][1] != k[1])), k[1])
+            data_about_argument = build_implicants(data_about_argument, j)
             create_implicat.append(['!'*(x[1][1] == 0)+x[0] for x in data_about_argument.items() if x[1][0]])
     temp_create_implicat = deepcopy(create_implicat)
     for i in temp_create_implicat:
@@ -208,15 +217,10 @@ def build_pcnf(group_of_arguments):
     data_about_argument = dict()
     for i in group_of_arguments:
         for j in i:
-            for x in range(len(j)):
-                for k in j[x][0].items():
-                    if x == 0:
-                        data_about_argument[k[0]] = (True, k[1])
-                    elif data_about_argument[k[0]][0]:
-                        data_about_argument[k[0]] = (bool(True*(not data_about_argument[k[0]][1] != k[1])), k[1])
+            data_about_argument = build_implicants(data_about_argument, j)
             create_implicat.append(['!'*(x[1][1] == 1)+x[0] for x in data_about_argument.items() if x[1][0]])
     temp_create_implicat = deepcopy(create_implicat)
     for i in temp_create_implicat:
         if create_implicat.count(i) > 1:
             create_implicat.remove(i)            
-    return create_implicat    
+    return create_implicat   
