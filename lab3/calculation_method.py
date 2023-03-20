@@ -22,17 +22,26 @@ def glue_implicants(formula):
 
 def calaculation_method(formula):
     if len(formula) == 0:
-        return []
+        return '-'
     formula_after_glue, base_formula, form_of_formula = glue_implicants(formula)
+    formula_after_glue_again = formula_after_glue
     while True:
         size = len(formula_after_glue)
-        temp, base_formula, form_of_formula = connect_two_implicats(formula_after_glue, form_of_formula)
-        if len(temp[0]) == 1:
-            formula_in_list = set([j for i in temp for j in i])
+        formula_after_glue_again, base_formula, form_of_formula = connect_two_implicats(formula_after_glue_again, form_of_formula)
+        if len(formula_after_glue_again[0]) == 1:
+            formula_in_list = set([j for i in formula_after_glue_again for j in i])
             formula_in_list = delete_extra_arguments(list(formula_in_list))
             return formula_in_list  
-        if size == len(temp):
-            break         
+        if size == len(formula_after_glue_again):
+            break
+        size_of_implicat = len(formula_after_glue_again[0])
+        for i in formula_after_glue_again:
+            if len(i) != size_of_implicat:
+                temp_formula_after_glue_again = deepcopy(formula_after_glue_again)
+                for i in temp_formula_after_glue_again:
+                    if formula_after_glue_again.count(i) > 1:
+                        formula_after_glue_again.remove(i)            
+                return remove_extra_implications(formula_after_glue_again, form_of_formula)           
     return remove_extra_implications(formula_after_glue, form_of_formula)
     
 def delete_extra_arguments(formula):
@@ -46,9 +55,11 @@ def delete_extra_arguments(formula):
 def connect_two_implicats(formula, form_of_formula):
     formula_after_glue = []
     differense = []
+    append_later = []
     if len(formula) == 1:
         return (formula, formula, form_of_formula)
     for i in range(0, len(formula)-1):
+        formula_size = len(formula_after_glue)
         for k in range(i+1, len(formula)):
             for j in range(0, len(formula[i])):
                 if formula[i][j] != formula[k][j]:
@@ -56,8 +67,13 @@ def connect_two_implicats(formula, form_of_formula):
             if len(differense) == 1 and differense[0][0][-1] == differense[0][1][-1]:
                 formula_after_glue.append(connect_arguments(formula[i], formula[k]))
             differense.clear()
+        if len(formula_after_glue) == formula_size and len(formula) > 2 and i == 0 \
+            and not len(formula[0]) == 1:
+            append_later.append(formula[i])
     if len(formula_after_glue) == 0:
         return (formula, formula,  form_of_formula)
+    else:
+        formula_after_glue = append_later + formula_after_glue
     return (formula_after_glue, formula, form_of_formula)
 
 def connect_arguments(first_implicat, second_implicant):
@@ -155,6 +171,12 @@ def cut_back_arguments(temp_formula, form_of_formula):
                   
 def translate_in_pcnf(formula):
     output_fomula = []
+    if type(formula) == str:
+        print(formula)
+        return
+    elif len(formula) == 0:
+        print(0)
+        return
     if len(formula[0]) == 1:
         output_fomula.append('(')
     for i in formula:
@@ -171,6 +193,12 @@ def translate_in_pcnf(formula):
     
 def translate_in_pdnf(formula):
     output_fomula = []
+    if type(formula) == str:
+        print(formula)
+        return
+    elif len(formula) == 0:
+        print(0)
+        return
     if len(formula[0]) == 1:
         output_fomula.append('(')
     for i in formula:

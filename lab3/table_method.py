@@ -1,11 +1,21 @@
 from prettytable import PrettyTable
-import math
+from calculation_method import *
 
 def table_method(formula, base_formula,form_of_formula, amount_values, table_data):
+    
+    if len(formula) == 1:
+        return formula
     if not form_of_formula:
-        print('Не существует!')
-        return
-    create_table(amount_values, formula, table_data, form_of_formula)
+        return '-'
+    temp_table = create_table(amount_values,formula, table_data, form_of_formula)
+    if form_of_formula == 'pdnf':
+        minimized_formula =  connect_two_implicats(build_pdnf(minimize_function(temp_table, form_of_formula)), form_of_formula)[0]
+    else:
+        minimized_formula =  connect_two_implicats(build_pcnf(minimize_function(temp_table, form_of_formula)), form_of_formula)[0]
+
+    if len(minimized_formula) == 1 and not minimized_formula[0]:
+        return '0'
+    return minimized_formula
     
 def create_table(amount_values, formula, table_data, form_of_formula):
     amount_rows = len(amount_values)//2
@@ -14,28 +24,23 @@ def create_table(amount_values, formula, table_data, form_of_formula):
     rows = create_line(amount_rows, amount_values[:amount_rows])
     columns = create_line(amount_columns, amount_values[-amount_columns:])
     table.field_names = [f'{"".join(amount_values[:amount_rows])}/{"".join(amount_values[-amount_columns:])}',
-                        *[''.join(map(str, i)) for i in transform_dict_in_list(columns)]]
-    
+                        *[''.join(map(str, i)) for i in transform_dict_in_list(columns)]] 
     temp = transform_dict_for_table(table_data)
-    temp_table = []
-    index = -1
+    temp_table, index_for_insert_cell = [], -1
     for i in rows:
         temp_table.append([])
-        index+=1
+        index_for_insert_cell+=1
         output = []
         for j in columns:
             temp_row = i | j
             for k in temp:
                 if temp_row in k:
-                   temp_table[index].append((temp_row, k[1]))
+                   temp_table[index_for_insert_cell].append((temp_row, k[1]))
                    output.append(k[1])
                    break
         table.add_row([''.join(map(str, list(i.values()))),*output])
     print(table)
-    if form_of_formula == 'pdnf':
-        minimize_function(temp_table, form_of_formula)
-    else:
-        minimize_function(temp_table, form_of_formula)
+    return temp_table
 
 def transform_dict_for_table(table_data):
     table = []
@@ -50,52 +55,52 @@ def transform_dict_in_list(table_data):
     return dict_in_list
 
 def create_line(amount_arguments, values):
-    columns = [{i: 0 for i in values}]
+    line = [{i: 0 for i in values}]
     for i in range(1, 2**amount_arguments):
         for j in range(amount_arguments-1, -1,-1):
-            temp = columns[i-1].copy()
-            index = list(temp.keys())[j]
-            temp[index] = 0
-            if temp not in columns:
-                columns.append(temp)
+            temp_line = line[i-1].copy()
+            index = list(temp_line.keys())[j]
+            temp_line[index] = 0
+            if temp_line not in line:
+                line.append(temp_line)
                 break
-            temp[index] = 1
-            if temp not in columns:
-                columns.append(temp)
+            temp_line[index] = 1
+            if temp_line not in line:
+                line.append(temp_line)
                 break
-    return columns       
+    return line       
 
 def minimize_function(table_data, form_of_formula):
     if check_all_in_group(table_data, 1*(form_of_formula == 'pdnf')):
-        print(table_data)
-        return
-    output = [[]]
+        return [table_data]
+    array_of_groups = [[]]
     for i in range(0, len(table_data)):
         for j in range(0, len(table_data[i])):
-            choose_group(check_four_group(table_data, i, j, 1*(form_of_formula == 'pdnf')), output ,table_data[i][j])
-    output.append([]) 
+            choose_group(check_four_group(table_data, i, j, 1*(form_of_formula == 'pdnf')), array_of_groups ,table_data[i][j])
+    array_of_groups.append([]) 
     for i in range(len(table_data)):
         for j in range(len(table_data[i])):
             if all(check_one_group(table_data, i, j, 1*(form_of_formula == 'pdnf'))):
-                output[-1].append((table_data[i][j], ))          
-    output.append([])
+                array_of_groups[-1].append((table_data[i][j], ))          
+    array_of_groups.append([])
     for i in range(len(table_data)):
         for j in range(len(table_data[i])):
-            result = check_two_group(table_data, i, j, 1*(form_of_formula == 'pdnf'))
-            choose_group(result, output, table_data[i][j])                  
-    print(output)   
+            group_result = check_two_group(table_data, i, j, 1*(form_of_formula == 'pdnf'))
+            choose_group(group_result, array_of_groups, table_data[i][j])                  
+    return array_of_groups   
 
-def choose_group(result, output, current_element):
-    all_elements = [k for i in output for j in i for k in j]
-    if len(result) == 0:
+def choose_group(group_result, array_of_groups, current_element):
+    all_elements = [k for i in array_of_groups for j in i for k in j]
+    if len(group_result) == 0:
         return 
-    if current_element not in all_elements or len(result[0]) == 4:
-        for i in result:
-            if (i not in all_elements and i not in output[-1]) or len(result) == 1:
-                if type(result[0][0]) == tuple: 
-                    output[-1].append(i)
+    if current_element not in all_elements or len(group_result[0]) == 4:
+        for i in group_result:
+            if (i not in all_elements and i not in array_of_groups[-1]) or len(group_result) == 1:
+                if type(group_result[0][0]) == tuple: 
+                    array_of_groups[-1].append(i)
                 else:
-                    output[-1].append((current_element, i))
+                    array_of_groups[-1].append((current_element, i))
+                    
 def check_one_group(table_data, current_row, current_column, form_of_formula):
     top, bottom, left, right = False, False, False, False
     if table_data[current_row][current_column][1] == form_of_formula:
@@ -146,20 +151,20 @@ def check_four_group(table_data, current_row, current_column, form_of_formula):
     answer = []
     if table_data[current_row][current_column][1] == form_of_formula:
         if current_column == 0:
-            temp = []
+            group_of_elements = []
             for i in range(current_column, len(table_data[current_row])):
                 if table_data[current_row][i][1] == form_of_formula:
-                    temp.append(table_data[current_row][i])
+                    group_of_elements.append(table_data[current_row][i])
                 else:
                     break
             if table_data[current_row][0][1] == form_of_formula:
                 for i in range(0, current_column):
                     if table_data[current_row][i][1] == form_of_formula:
-                        temp.append(table_data[current_row][i])
+                        group_of_elements.append(table_data[current_row][i])
                     else:
                         break
-            if len(temp) == 4:
-                answer.append(tuple(temp))
+            if len(group_of_elements) == 4:
+                answer.append(tuple(group_of_elements))
         if current_row == 0:
             if current_column != len(table_data[current_row])-1:
                 if table_data[current_row][current_column+1][1] == form_of_formula and table_data[current_row+1][current_column][1] == form_of_formula and \
@@ -179,3 +184,39 @@ def check_all_in_group(table_data, form_of_formula):
             if j[1] != form_of_formula:
                 return False
     return True
+
+def build_pdnf(group_of_arguments):
+    create_implicat = []
+    data_about_argument = dict()
+    for i in group_of_arguments:
+        for j in i:
+            for x in range(len(j)):
+                for k in j[x][0].items():
+                    if x == 0:
+                        data_about_argument[k[0]] = (True, k[1])
+                    elif data_about_argument[k[0]][0]:
+                        data_about_argument[k[0]] = (bool(True*(not data_about_argument[k[0]][1] != k[1])), k[1])
+            create_implicat.append(['!'*(x[1][1] == 0)+x[0] for x in data_about_argument.items() if x[1][0]])
+    temp_create_implicat = deepcopy(create_implicat)
+    for i in temp_create_implicat:
+        if create_implicat.count(i) > 1:
+            create_implicat.remove(i)            
+    return create_implicat
+
+def build_pcnf(group_of_arguments):
+    create_implicat = []
+    data_about_argument = dict()
+    for i in group_of_arguments:
+        for j in i:
+            for x in range(len(j)):
+                for k in j[x][0].items():
+                    if x == 0:
+                        data_about_argument[k[0]] = (True, k[1])
+                    elif data_about_argument[k[0]][0]:
+                        data_about_argument[k[0]] = (bool(True*(not data_about_argument[k[0]][1] != k[1])), k[1])
+            create_implicat.append(['!'*(x[1][1] == 1)+x[0] for x in data_about_argument.items() if x[1][0]])
+    temp_create_implicat = deepcopy(create_implicat)
+    for i in temp_create_implicat:
+        if create_implicat.count(i) > 1:
+            create_implicat.remove(i)            
+    return create_implicat    

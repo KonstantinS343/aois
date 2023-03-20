@@ -14,7 +14,7 @@ from table_method import *
 #!((!x1+x3)*!(x2*!x3))
 def main():
     logic_function = LogicFunction()
-    logic_function.handler_input_formula('!(x1+!x3)*(x2*!x3)')
+    logic_function.handler_input_formula('!((!x1+x3)*!(x2*!x3))')
     logic_function.create_logic_table()
     logic_function.perfect_conjunctive_normal_form()
     logic_function.perfect_disjunctive_normal_form()
@@ -31,10 +31,11 @@ def main():
     #translate_in_pdnf(tabular_calculation_method(*glue_implicants(logic_function.perfect_disjunctive_normal_form_formula)))
     #translate_in_pcnf(tabular_calculation_method(*glue_implicants(logic_function.perfect_conjunctive_normal_form_formula)))
 
-    #translate_in_pdnf(calaculation_method(logic_function.perfect_disjunctive_normal_form_formula))
-    #translate_in_pcnf(calaculation_method(logic_function.perfect_conjunctive_normal_form_formula))
+    translate_in_pdnf(calaculation_method(logic_function.perfect_disjunctive_normal_form_formula))
+    translate_in_pcnf(calaculation_method(logic_function.perfect_conjunctive_normal_form_formula))
     
-    table_method(*glue_implicants(logic_function.perfect_conjunctive_normal_form_formula), amount_values, logic_function.table_data)
-    table_method(*glue_implicants(logic_function.perfect_disjunctive_normal_form_formula), amount_values, logic_function.table_data)
+    translate_in_pdnf(table_method(*glue_implicants(logic_function.perfect_disjunctive_normal_form_formula), amount_values, logic_function.table_data))
+    translate_in_pcnf(table_method(*glue_implicants(logic_function.perfect_conjunctive_normal_form_formula), amount_values, logic_function.table_data))
+
 if __name__ == '__main__':
     main()
