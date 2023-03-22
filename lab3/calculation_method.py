@@ -59,11 +59,20 @@ def delete_extra_arguments(formula):
             temp_formula.remove('!' + i)
     return [[i] for i in temp_formula]
 
+def check_size(formula):
+    if len(formula) > 0:
+        size = len(formula[0])
+    else:
+        return False
+    for i in formula:
+        if len(i) != size:
+            return False
+    return True
 
 def connect_two_implicats(formula, form_of_formula):
-    formula_after_glue, differense, append_later = [], [], []
-    if len(formula) == 1:
-        return (formula, formula, form_of_formula)
+    formula_after_glue, differense, append_later, use_implicats = [], [], [], []
+    if not check_size(formula) or len(formula) == 1:
+        return  (formula, formula, form_of_formula)
     for i in range(0, len(formula) - 1):
         formula_size = len(formula_after_glue)
         for k in range(i + 1, len(formula)):
@@ -73,14 +82,15 @@ def connect_two_implicats(formula, form_of_formula):
             if len(differense) == 1 and differense[0][0][-1] == differense[0][1][-1]:
                 formula_after_glue.append(
                     connect_arguments(formula[i], formula[k]))
+                use_implicats.append(formula[k])
             differense.clear()
-        if len(formula_after_glue) == formula_size and len(
-                formula) > 2 and i == 0 and not len(formula[0]) == 1:
+        if len(formula_after_glue) == formula_size and formula[i] not in use_implicats:
             append_later.append(formula[i])
     if len(formula_after_glue) == 0:
         return (formula, formula, form_of_formula)
     else:
-        formula_after_glue = append_later + formula_after_glue
+        formula_after_glue = append_later + formula_after_glue + ([formula[-1]] \
+            if formula[-1] not in use_implicats else [])
     return (formula_after_glue, formula, form_of_formula)
 
 
@@ -178,12 +188,12 @@ def cut_back_arguments(temp_formula, form_of_formula):
         if check_on_extra_implicants_pdnf(formula_after_open_staples):
             return []
         else:
-            return formula_after_open_staples
+            return True
     else:
         if check_on_extra_implicants_pcnf(formula_after_open_staples):
             return []
         else:
-            return formula_after_open_staples
+            return True
 
 
 def translate_in_pcnf(formula):
