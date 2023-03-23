@@ -15,14 +15,14 @@ TESTS = ['!((!x1+!x3)*(!x2*!x3))',
 ]
 
 def main():
-    for i in TESTS:
+    for i in range(len(TESTS)):
         logic_function = LogicFunction()
-        logic_function.handler_input_formula(i)
+        logic_function.handler_input_formula(TESTS[i])
         logic_function.create_logic_table()
         logic_function.perfect_conjunctive_normal_form()
         logic_function.perfect_disjunctive_normal_form()
         amount_values = logic_function.arguments
-        print('------------INPUT---------------')
+        print(f'------------INPUT#{i+1}---------------')
         print(logic_function.perfect_disjunctive_normal_form_formula)
         print(logic_function.perfect_conjunctive_normal_form_formula)
         print('------------CALCULATION METHOD---------------')
