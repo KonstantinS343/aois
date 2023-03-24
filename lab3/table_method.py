@@ -36,7 +36,7 @@ def create_table(amount_values, formula, table_data, form_of_formula):
     columns = create_line(amount_columns, amount_values[-amount_columns:])
     table.field_names = [f'{"".join(amount_values[:amount_rows])}/{"".join(amount_values[-amount_columns:])}',
                          *[''.join(map(str, i)) for i in transform_dict_in_list(columns)]]
-    temp = transform_dict_for_table(table_data)
+    table_in_list_form = transform_dict_for_table(table_data)
     temp_table, index_for_insert_cell = [], -1
     for i in rows:
         temp_table.append([])
@@ -44,7 +44,7 @@ def create_table(amount_values, formula, table_data, form_of_formula):
         output = []
         for j in columns:
             temp_row = i | j
-            for k in temp:
+            for k in table_in_list_form:
                 if temp_row in k:
                     temp_table[index_for_insert_cell].append((temp_row, k[1]))
                     output.append(k[1])
@@ -73,15 +73,15 @@ def create_line(amount_arguments, values):
     line = [{i: 0 for i in values}]
     for i in range(1, 2**amount_arguments):
         for j in range(amount_arguments - 1, -1, -1):
-            temp_line = line[i - 1].copy()
-            index = list(temp_line.keys())[j]
-            temp_line[index] = 0
-            if temp_line not in line:
-                line.append(temp_line)
+            line_in_table = line[i - 1].copy()
+            index = list(line_in_table.keys())[j]
+            line_in_table[index] = 0
+            if line_in_table not in line:
+                line.append(line_in_table)
                 break
-            temp_line[index] = 1
-            if temp_line not in line:
-                line.append(temp_line)
+            line_in_table[index] = 1
+            if line_in_table not in line:
+                line.append(line_in_table)
                 break
     return line
 

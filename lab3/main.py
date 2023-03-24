@@ -7,11 +7,7 @@ from calculation_method import *
 from tabular_calculation_method import *
 from table_method import *
 
-TESTS = ['!((!x1+!x3)*(!x2*!x3))',
-        '(!x1+x2)',
-        '!(x1+x2)*!(!x2+!x3)',
-        '!(x1*x2)+!(x2*x3)',
-        '!((!x1+x3)*!(x2*!x3))'
+TESTS = ['!((!x1+x3)*(!x2*!x3))'
 ]
 
 def main():
