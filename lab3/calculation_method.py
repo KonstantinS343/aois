@@ -31,7 +31,7 @@ def calaculation_method(formula):
     formula_after_glue, base_formula, form_of_formula = glue_implicants(formula)
     formula_after_glue_again = formula_after_glue
     while True:
-        size = len(formula_after_glue)
+        size = len(formula_after_glue_again)
         formula_after_glue_again, base_formula, form_of_formula = connect_two_implicats(
             formula_after_glue_again, form_of_formula)
         if len(formula_after_glue_again[0]) == 1:

@@ -38,7 +38,7 @@ def implicats_table(formula_after_glue, base_formula):
         table_data.append(
             [all([k in j for k in i]) * 'X' for j in base_formula])
 
-    print(table)
+    #print(table)
     index_of_delete_row = delete_row(table_data)
     while index_of_delete_row is not None:
         del formula_after_glue[index_of_delete_row]

@@ -7,9 +7,24 @@ from calculation_method import *
 from tabular_calculation_method import *
 from table_method import *
 
-TESTS = ['!((!x1+x3)*(!x2*!x3))'
-]
+expr_y4 = "(!x4*!x3*!x2*!x1)+(!x4*!x3*!x2*x1)+(!x4*!x3*x2*!x1)+(!x4*!x3*x2*x1)+(!x4*x3*!x2*!x1)+(!x4*x3*!x2*x1)+(!x4*x3*x2*!x1)"
+expr_y3 = "(!x4*!x3*x2*x1)+(!x4*x3*!x2*!x1)+(!x4*x3*!x2*x1)+(!x4*x3*x2*!x1)"
+expr_y2 = "(!x4*!x3*!x2*x1)+(!x4*!x3*x2*!x1)+(!x4*x3*!x2*x1)+(!x4*x3*x2*!x1)+(x4*!x3*!x2*x1)"
+expr_y1 = "(!x4*!x3*!x2*!x1)+(!x4*!x3*x2*!x1)+(!x4*x3*!x2*!x1)+(!x4*x3*x2*!x1)+(x4*!x3*!x2*!x1)"
 
+expr_b = "(!x1*!x2*x3)+(!x1*x2*!x3)+(!x1*x2*x3)+(x1*x2*x3)"
+expr_d = "(!x1*!x2*x3)+(!x1*x2*!x3)+(x1*!x2*!x3)+(x1*x2*x3)"
+
+
+TESTS = [
+    expr_y4,
+    expr_y3,
+    expr_y2,
+    expr_y1,
+    expr_b,
+    expr_d
+]
+      
 def main():
     for i in range(len(TESTS)):
         logic_function = LogicFunction()
@@ -31,6 +46,22 @@ def main():
         translate_in_pdnf(table_method(*glue_implicants(logic_function.perfect_disjunctive_normal_form_formula), amount_values, logic_function.table_data))
         translate_in_pcnf(table_method(*glue_implicants(logic_function.perfect_conjunctive_normal_form_formula), amount_values, logic_function.table_data))
         print('\n')
-
+        
+def lab4_8421_and_substractor():
+    name_of_test = '8421+9'
+    for i in range(len(TESTS)):
+        logic_function = LogicFunction()
+        logic_function.handler_input_formula(TESTS[i])
+        logic_function.create_logic_table()
+        logic_function.perfect_conjunctive_normal_form()
+        logic_function.perfect_disjunctive_normal_form()
+        if i > 3:
+            name_of_test = 'substractor'
+        print(f'------------INPUT#{i+1}({name_of_test})---------------')
+        print(logic_function.perfect_disjunctive_normal_form_formula)
+        print(f'------------OUTPUT#{i+1}({name_of_test})---------------')
+        translate_in_pdnf(tabular_calculation_method(*glue_implicants(logic_function.perfect_disjunctive_normal_form_formula)))
+        print('\n')
 if __name__ == '__main__':
-    main()
+    #main()
+    lab4_8421_and_substractor()
