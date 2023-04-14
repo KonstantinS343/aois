@@ -14,15 +14,16 @@ expr_y1 = "(!x4*!x3*!x2*!x1)+(!x4*!x3*x2*!x1)+(!x4*x3*!x2*!x1)+(!x4*x3*x2*!x1)+(
 
 expr_b = "(!x1*!x2*x3)+(!x1*x2*!x3)+(!x1*x2*x3)+(x1*x2*x3)"
 expr_d = "(!x1*!x2*x3)+(!x1*x2*!x3)+(x1*!x2*!x3)+(x1*x2*x3)"
-
+h1 = '(!x1*!x2*!x3*!x4*x5)+(x1*x2*x3*x4*x5)+(!x1*x2*x3*x4*x5)+(x1*!x2*x3*x4*x5)+(!x1*!x2*x3*x4*x5)+(x1*x2*!x3*x4*x5)+(!x1*x2*!x3*x4*x5)+(x1*!x2*!x3*x4*x5)+(!x1*!x2*!x3*x4*x5)+(x1*x2*x3*!x4*x5)+(!x1*x2*x3*!x4*x5)+(x1*!x2*x3*!x4*x5)+(!x1*!x2*x3*!x4*x5)+(x1*x2*!x3*!x4*x5)+(!x1*x2*!x3*!x4*x5)+(x1*!x2*!x3*!x4*x5)'
+h2 = '(!x1*!x2*!x3*!x4*x5)+(!x1*x2*x3*x4*x5)+(!x1*!x2*x3*x4*x5)+(!x1*x2*!x3*x4*x5)+(!x1*!x2*!x3*x4*x5)+(!x1*x2*x3*!x4*x5)+(!x1*!x2*x3*!x4*x5)+(!x1*x2*!x3*!x4*x5)'
+h3 = '(!x1*!x2*!x3*!x4*x5)+(!x1*!x2*x3*x4*x5)+(!x1*!x2*!x3*x4*x5)+(!x1*!x2*x3*!x4*x5)'
+h4 = '(!x1*!x2*!x3*!x4*x5)+(!x1*!x2*!x3*x4*x5)'
 
 TESTS = [
-    expr_y4,
-    expr_y3,
-    expr_y2,
-    expr_y1,
-    expr_b,
-    expr_d
+    h1,
+    h2, 
+    h3,
+    h4
 ]
       
 def main():
@@ -62,6 +63,21 @@ def lab4_8421_and_substractor():
         print(f'------------OUTPUT#{i+1}({name_of_test})---------------')
         translate_in_pdnf(tabular_calculation_method(*glue_implicants(logic_function.perfect_disjunctive_normal_form_formula)))
         print('\n')
+        
+def lab5_substractor():
+    for i in range(len(TESTS)):
+        logic_function = LogicFunction()
+        logic_function.handler_input_formula(TESTS[i])
+        logic_function.create_logic_table()
+        logic_function.perfect_conjunctive_normal_form()
+        logic_function.perfect_disjunctive_normal_form()
+        print(f'------------INPUT#{i+1}(h{i+1})---------------')
+        print(logic_function.perfect_disjunctive_normal_form_formula)
+        print(f'------------OUTPUT#{i+1}(h{i+1})---------------')
+        translate_in_pdnf(tabular_calculation_method(*glue_implicants(logic_function.perfect_disjunctive_normal_form_formula)))
+        print('\n')
+
 if __name__ == '__main__':
     #main()
-    lab4_8421_and_substractor()
+    #lab4_8421_and_substractor()
+    lab5_substractor()

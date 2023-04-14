@@ -17,6 +17,7 @@ def tabular_calculation_method(
             formula_in_list = set([j for i in formula_after_glue for j in i])
             formula_in_list = delete_extra_arguments(list(formula_in_list))
             formula_after_glue = formula_in_list
+        formula_after_glue = delete_duplicate(formula_after_glue)
         if size == len(formula_after_glue):
             break
         if len(formula_after_glue) == 0:
@@ -27,6 +28,12 @@ def tabular_calculation_method(
                 return implicats_table(formula_after_glue, base_formula)
     return implicats_table(formula_after_glue, base_formula)
 
+def delete_duplicate(formula_after_glue):
+    temp = []
+    for i in formula_after_glue:
+        if i not in temp:
+            temp.append(i)
+    return temp
 
 def implicats_table(formula_after_glue, base_formula):
     table = PrettyTable()
