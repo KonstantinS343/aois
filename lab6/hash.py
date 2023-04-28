@@ -36,6 +36,8 @@ class Hash:
             self.hash_table[hash_index].append(key_value)
 
         if self.take_overflow():
+            print(self.show_table())
+            self.show_table_version_2()
             print('REBUILD TABLE')
             self.rebuild_table()
 
