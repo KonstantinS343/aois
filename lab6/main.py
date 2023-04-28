@@ -48,5 +48,10 @@ def main():
 
     hash_table.show_table_version_2()
 
+    hash_table.search('Joseph')
+    hash_table.search('Brooklyn')
+    hash_table.search('Ahmed')
+    hash_table.search('Grace')
+
 if __name__ == '__main__':
     main()

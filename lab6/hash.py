@@ -23,13 +23,8 @@ class Hash:
         for i in map(ord, broken_word[2:]):
             calculated_hash *= self.hash_function_const
             calculated_hash += i
-        self.write_log_file(f'add {element_key_value.key} {element_key_value.value} Hash: {calculated_hash} ID: {calculated_hash%self.table_size}')
         calculated_hash %= self.table_size
         return (calculated_hash, element_key_value)
-    
-    def write_log_file(self, command):
-        with open('log.txt', 'a') as file:
-            file.write(command + '\n')
 
     def add_new_hash_line(self, input):
         hash_index, key_value = self.hash_function(input)
@@ -60,7 +55,8 @@ class Hash:
                 if j != len(self.hash_table[i]) - 1:
                     print(f'{self.hash_table[i][j].key}:{self.hash_table[i][j].value}', end=' -> ')
                 else:
-                    print(f'{self.hash_table[i][j].key}:{self.hash_table[i][j].value}')
+                    print(f'{self.hash_table[i][j].key}:{self.hash_table[i][j].value}', end=' ')
+            print('\n')
 
     def take_overflow(self):
         for i in self.hash_table:
@@ -73,10 +69,13 @@ class Hash:
         for i in self.hash_table[hash_key]:
             if i.key == input:
                 self.hash_table[hash_key].remove(i)
-                self.write_log_file(f'remove {elements.key} {elements.value} ID: {hash_key%self.table_size}')
 
     def search(self, key):
-        pass
+        hash_key, _ = self.hash_function([key, ''])
+        for i in self.hash_table[hash_key]:
+            if i.key == key:
+                print(i.value)
+                break
 
     def rebuild_table(self):
         temp_hash_table = deepcopy(self.hash_table)
