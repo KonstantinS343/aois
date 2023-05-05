@@ -30,7 +30,7 @@ class Hash:
         hash_index, key_value = self.hash_function(input)
         for i in range(len(self.hash_table[hash_index])):
             if self.hash_table[hash_index][i].key == key_value.key:
-                self.hash_table[hash_index][i].key = key_value.key
+                self.hash_table[hash_index][i].value = key_value.value
                 break
         else:
             self.hash_table[hash_index].append(key_value)
