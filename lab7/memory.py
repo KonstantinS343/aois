@@ -1,8 +1,5 @@
-from typing import Any
-
-
 class Memory:
-    def __init__(self, inputs) -> None:
+    def __init__(self, inputs):
         self.memory = []
         
         for i in inputs:
@@ -53,8 +50,4 @@ class Memory:
             for j in range(len(self.memory)-1-i):
                 if self.comparison(self.memory[j], self.memory[j+1], sort_flag):
                     self.memory[j], self.memory[j+1] = self.memory[j+1], self.memory[j]
-        print(self.translate_to_decimal())
-        print('\n')
-        
-                
-    
+        print(str(self.translate_to_decimal())+'\n')        
