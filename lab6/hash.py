@@ -11,7 +11,6 @@ class Hash:
 
     def __init__(self) -> None:
         self.table_size = 16
-        self.size_of_table_line = 4
         self.hash_function_const = 127
         self.hash_table: List[List[HashTable_element]] = [[] for _ in range(self.table_size)]
 
@@ -19,10 +18,12 @@ class Hash:
         element_key_value = HashTable_element(input[0], input[1])
         broken_word = [i for i in element_key_value.key]
         calculated_hash = ord(broken_word[0])*self.hash_function_const
-        calculated_hash += ord(broken_word[1])
-        for i in map(ord, broken_word[2:]):
-            calculated_hash *= self.hash_function_const
-            calculated_hash += i
+        if len(broken_word) > 1:
+            calculated_hash += ord(broken_word[1])
+        if len(broken_word) > 2:
+            for i in map(ord, broken_word[2:]):
+                calculated_hash *= self.hash_function_const
+                calculated_hash += i
         calculated_hash %= self.table_size
         return (calculated_hash, element_key_value)
 
@@ -78,6 +79,8 @@ class Hash:
             if i.key == key:
                 print(i.value)
                 break
+        else:
+            raise Exception('Key error')
 
     def rebuild_table(self):
         temp_hash_table = deepcopy(self.hash_table)

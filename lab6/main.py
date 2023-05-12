@@ -51,7 +51,8 @@ def main():
     hash_table.search('Joseph')
     hash_table.search('Brooklyn')
     hash_table.search('Ahmed')
-    hash_table.search('Grace')
+    hash_table.search('Hannah')
+    hash_table.search('A')
 
 if __name__ == '__main__':
     main()
