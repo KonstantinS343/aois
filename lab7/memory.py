@@ -5,7 +5,7 @@ class Memory:
         for i in inputs:
             self.memory.append(self.translate_to_binary(i))
         
-    def __call__(self) -> Any:
+    def __call__(self):
         for i in self.memory:
             print(i)
     
