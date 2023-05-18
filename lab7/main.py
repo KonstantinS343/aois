@@ -1,7 +1,11 @@
 from memory import Memory
+from random import randint
 
 def main():
-    memory = Memory([3, 67, 12, 33, 0, 1, 2, 23])
+    input_list = []
+    for i in range(8):
+        input_list.append(randint(0, 100))
+    memory = Memory(input_list)
     user_input = ' '
     memory()
     while user_input:
@@ -16,8 +20,6 @@ def main():
                 memory()
             case '2':
                 mask = input('Enter mask(use "x" instead spaces): ')
-                print('\nFind by mask: 0xx0xxx1')
-                memory.search_by_mask('0xx0xxx1')
                 print(f'\nFind by mask: {mask}')
                 memory.search_by_mask(mask)
             case _:
