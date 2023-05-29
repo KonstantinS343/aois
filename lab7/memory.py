@@ -64,7 +64,7 @@ class Memory:
         
         return mask_split
         
-    def search_by_mask(self, mask: str) -> List[List[int]]:
+    def search_by_mask(self, mask: str) -> None:
         mask = self.split_mask(mask)
         search_result = []    
         

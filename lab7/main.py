@@ -5,6 +5,7 @@ def main():
     input_list = []
     for i in range(8):
         input_list.append(randint(0, 100))
+    print(input_list)
     memory = Memory(input_list)
     user_input = ' '
     memory()
