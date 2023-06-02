@@ -53,13 +53,13 @@ class AssociatMemory:
         self.memory_diagonal[column] = word[self.size-column:] + word[:self.size-column]
         self.rotate_memory()
     
-    def read_word(self, column: int) -> None:
+    def read_word(self, column: int) -> typing.List[int]:
         self.rotate_memory()
         word = self.memory_diagonal[column][column:] + self.memory_diagonal[column][:column]
         self.rotate_memory()
         return word
     
-    def __str__(self) -> None:
+    def __str__(self) -> str:
         for i in self.memory_diagonal:
             memory_row = ' '.join([str(j) for j in i])
             print(memory_row)   
@@ -120,7 +120,7 @@ class AssociatMemory:
             
         return g_variable
     
-    def to_normal(self):
+    def to_normal(self) -> typing.List[int]:
         normal_form = []
         self.rotate_memory()
         matrix = copy.deepcopy(self.memory_diagonal)
