@@ -18,10 +18,10 @@ def main():
     print('\n\n\n')
     
     print('Function: ')
-    print(f'The function 1 for 1, 2 and 3 words: {memory.f1(1, 2, 3)}')
-    print(f'The function 3 for 1 word: {memory.f3(1)}')
-    print(f'The function 12 for 4 word: {memory.f12(4)}')
-    print(f'The function 14 for 1, 2 and 5 words: {memory.f14(1, 2, 5)}')
+    print(f'The function 1 for 1, 2 and 3 words: {memory.f1([1, 2, 3])}')
+    print(f'The function 3 for 1 word: {memory.f3([1, 2])}')
+    print(f'The function 12 for 4 word: {memory.f12([4, 2])}')
+    print(f'The function 14 for 1, 2 and 5 words: {memory.f14([1, 2, 5])}')
     print('\n\n\n')
     
     print('Memory in diagonal form: ')

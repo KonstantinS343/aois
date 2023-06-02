@@ -19,33 +19,33 @@ class AssociatMemory:
                 memory_row = ' '.join([str(j) for j in i])
                 print(memory_row)
         
-    def f1(self, first_column: typing.List[int], second_column: typing.List[int], third_column: typing.List[int]) -> str:
-        first_word = self.read_word(first_column)
-        second_word = self.read_word(second_column)
+    def f1(self, columns: typing.List[int]) -> str:
+        first_word = self.read_word(columns[0])
+        second_word = self.read_word(columns[1])
         new_word = []
         for i in range(self.size):
             new_word.append(first_word[i] and second_word[i])
-        self.set_word(new_word, third_column)
+        self.set_word(new_word, columns[2])
         return ' '.join([str(j) for j in new_word])
     
-    def f3(self, column: int) -> str:
-        new_word = self.read_word(column)
+    def f3(self, columns: typing.List[int]) -> str:
+        new_word = self.read_word(columns[0])
         return ' '.join([str(j) for j in new_word])
     
-    def f12(self, column: int) -> str:
-        new_word = self.read_word(column)
+    def f12(self, columns: typing.List[int]) -> str:
+        new_word = self.read_word(columns[0])
         new_word = list(map(lambda x: 0 if x==1 else 1, new_word))
-        self.set_word(new_word, column)
+        self.set_word(new_word, columns[0])
         return ' '.join([str(j) for j in new_word])
     
-    def f14(self, first_column: typing.List[int], second_column: typing.List[int], third_column: typing.List[int]) -> str:
-        first_word = self.read_word(first_column)
-        second_word = self.read_word(second_column)
+    def f14(self, columns: typing.List[int]) -> str:
+        first_word = self.read_word(columns[0])
+        second_word = self.read_word(columns[1])
         new_word = []
         for i in range(self.size):
             new_word.append(first_word[i] and second_word[i])
         new_word = list(map(lambda x: 0 if x==1 else 1, new_word))
-        self.set_word(new_word, third_column)
+        self.set_word(new_word, columns[2])
         return ' '.join([str(j) for j in new_word])
     
     def set_word(self, word: typing.List[int], column: int) -> None:
