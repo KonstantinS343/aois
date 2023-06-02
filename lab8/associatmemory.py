@@ -59,6 +59,10 @@ class AssociatMemory:
         self.rotate_memory()
         return word
     
+    def get_line(self, column: int) -> typing.List[int]:
+        memory = self.to_normal()
+        return memory[column]
+    
     def __str__(self) -> str:
         for i in self.memory_diagonal:
             memory_row = ' '.join([str(j) for j in i])

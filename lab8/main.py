@@ -17,6 +17,10 @@ def main():
     print(' '.join([str(i) for i in memory.read_word(user_input)]))
     print('\n\n\n')
     
+    user_input = int(input('Take line by index: '))
+    print(' '.join([str(i) for i in memory.get_line(user_input)]))
+    print('\n\n\n')
+    
     print('Function: ')
     print(f'The function 1 for 1, 2 and 3 words: {memory.f1([1, 2, 3])}')
     print(f'The function 3 for 1 word: {memory.f3([1, 2])}')
