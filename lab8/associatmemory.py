@@ -1,79 +1,63 @@
 from random import choice
 import typing
+import copy
 
 class AssociatMemory:
     def __init__(self) -> None:
         self.size = 16
-        #self.memory = [[choice([0, 1]) for i in range(self.size)] for j in range(self.size)]
-        self.memory = [[0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1],
-                        [0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1],
-                        [1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1],
-                        [1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0],
-                        [1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0],
-                        [1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1],
-                        [0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0],
-                        [0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1],
-                        [1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0],
-                        [1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0],
-                        [0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1],
-                        [0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0],
-                        [1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1],
-                        [0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0],
-                        [1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1],
-                        [1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1]]
+        self.memory = [[choice([0, 1]) for i in range(self.size)] for j in range(self.size)]
         self.memory_diagonal = self.memory
         
     def print_normal_from(self) -> None:
-        for i in self.memory:
-            memory_row = ' '.join([str(j) for j in i])
-            print(memory_row)
+        if self.memory_diagonal == self.memory:
+            for i in self.memory:
+                memory_row = ' '.join([str(j) for j in i])
+                print(memory_row)
+        else:
+            memory = self.to_normal()
+            for i in memory:
+                memory_row = ' '.join([str(j) for j in i])
+                print(memory_row)
         
     def f1(self, first_column: typing.List[int], second_column: typing.List[int], third_column: typing.List[int]) -> str:
-        self.rotate_memory()
-        first_word = self.memory_diagonal[first_column]
-        second_word = self.memory_diagonal[second_column]
+        first_word = self.read_word(first_column)
+        second_word = self.read_word(second_column)
         new_word = []
         for i in range(self.size):
             new_word.append(first_word[i] and second_word[i])
-        self.rotate_memory()
         self.set_word(new_word, third_column)
         return ' '.join([str(j) for j in new_word])
     
     def f3(self, column: int) -> str:
-        self.rotate_memory()
-        new_word = self.memory_diagonal[column]
-        self.rotate_memory()
+        new_word = self.read_word(column)
         return ' '.join([str(j) for j in new_word])
     
     def f12(self, column: int) -> str:
-        self.rotate_memory()
-        new_word = self.memory_diagonal[column]
+        new_word = self.read_word(column)
         new_word = list(map(lambda x: 0 if x==1 else 1, new_word))
-        self.rotate_memory()
         self.set_word(new_word, column)
         return ' '.join([str(j) for j in new_word])
     
     def f14(self, first_column: typing.List[int], second_column: typing.List[int], third_column: typing.List[int]) -> str:
-        self.rotate_memory()
-        first_word = self.memory_diagonal[first_column]
-        second_word = self.memory_diagonal[second_column]
+        first_word = self.read_word(first_column)
+        second_word = self.read_word(second_column)
         new_word = []
         for i in range(self.size):
             new_word.append(first_word[i] and second_word[i])
         new_word = list(map(lambda x: 0 if x==1 else 1, new_word))
-        self.rotate_memory()
         self.set_word(new_word, third_column)
         return ' '.join([str(j) for j in new_word])
     
     def set_word(self, word: typing.List[int], column: int) -> None:
         self.rotate_memory()
-        self.memory_diagonal[column] = word
+        self.memory_diagonal[column] = word[self.size-column:] + word[:self.size-column]
         self.rotate_memory()
     
     def read_word(self, column: int) -> None:
         self.rotate_memory()
-        print(' '.join([str(j) for j in self.memory_diagonal[column]]))
+        word = self.memory_diagonal[column][column:] + self.memory_diagonal[column][:column]
         self.rotate_memory()
+        return word
     
     def __str__(self) -> None:
         for i in self.memory_diagonal:
@@ -104,13 +88,14 @@ class AssociatMemory:
         return word
     
     def search(self, word: typing.List[int]) -> str:
+        memory = self.to_normal()
+        memory = [[memory[i][j] for i in range(self.size)] for j in range(self.size)]
         print(f'Input word: {word}')
         print('\n')
-        self.rotate_memory()
         less_then_input_word = []
         more_then_input_word = []
 
-        for i in self.memory_diagonal:
+        for i in memory:
             if self.comparison(word, i):
                 more_then_input_word.append(i)
             else:
@@ -122,7 +107,6 @@ class AssociatMemory:
         print('The words, that more then input word')
         smallest_word = self.compare_words(more_then_input_word, False)
         print('Result: ')
-        self.rotate_memory()
         return ' '.join([str(i) for i in biggest_word]) + '\n' + ' '.join([str(i) for i in smallest_word])
     
     def comparison(self, first_word: typing.List[int], second_word: typing.List[int]) -> bool:
@@ -136,18 +120,27 @@ class AssociatMemory:
             
         return g_variable
     
-    def arimetic_operation(self, mask: typing.List[int]) -> None:
+    def to_normal(self):
+        normal_form = []
         self.rotate_memory()
-        pass_validation_by_mask = list(filter(lambda x: x[:3] == mask, self.memory_diagonal))
+        matrix = copy.deepcopy(self.memory_diagonal)
+        self.rotate_memory()
+        for i in range(len(matrix)):
+            normal_form.append(self.read_word(i))
+        return [[normal_form[i][j] for i in range(self.size)] for j in range(self.size)]
+    
+    def arimetic_operation(self, mask: typing.List[int]) -> None:
+        memory = self.to_normal()
+        memory = [[memory[i][j] for i in range(self.size)] for j in range(self.size)]
+        pass_validation_by_mask = list(filter(lambda x: x[:3] == mask, memory))
         print(f'Mask: {"".join(str(i) for i in mask)}')
         print('Words that pass validation: ')
         new_words = []
         for i in pass_validation_by_mask:
             memory_row = ' '.join(str(j) for j in i)
-            print(f'{memory_row}, index - {self.memory_diagonal.index(i)}')
-            new_words.append((self.memory_diagonal.index(i), self.addiction(i)))
+            print(f'{memory_row}, index - {memory.index(i)}')
+            new_words.append((memory.index(i), self.addiction(i)))
         
-        self.rotate_memory()
         print('Words after arifmetic operation: ')
         for i in new_words:
             memory_row = ' '.join(str(j) for j in i[1])
@@ -174,6 +167,3 @@ class AssociatMemory:
         S.append(dop_bit)
         S = list(reversed(S))
         return word[:11] + S
-                
-    
-    
